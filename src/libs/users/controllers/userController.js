@@ -31,45 +31,54 @@ export class UserController {
 
   async updateUser(entity, _id) {
     try {
-        const found = await this.existEmail(entity.email);
-        if (!found) {
-            throw {
-                msg: "User not found",
-                code: "UL003"
-            }
-        }
-        delete entity._id;
-        await userCreateModel.findOneAndUpdate({_id}, entity);
-        return {
-            msg: "User update with success"
-        }
+      const found = await this.existEmail(entity.email);
+      if (!found) {
+        throw {
+          msg: "User not found",
+          code: "UL003",
+        };
+      }
+      delete entity._id;
+      await userCreateModel.findOneAndUpdate({ _id }, entity);
+      return {
+        msg: "User update with success",
+      };
     } catch (error) {
-        console.log(error);
-        throw error;
+      throw error;
     }
   }
 
   async getSingleUser(_id) {
     try {
-        return await userCreateModel.findOne({_id});
+      return await userCreateModel.findOne({ _id });
     } catch (error) {
-        throw {
-            msg: "User not found"
-        }
+      throw {
+        msg: "User not found",
+      };
     }
   }
 
   async login(entity) {
     try {
       const found = await this.existEmail(entity.email);
-      if (found) {
-        const token = this.jwt.sign(entity.email);
-        return token;
+      if (!found) {
+        throw {
+          msg: "Not user was found",
+          code: "UL002",
+        };
       }
-      throw {
-        msg: "Not user was found",
-        code: "UL002",
-      };
+      const validatePassword = await this.bcrypt.compare(
+        entity.password,
+        found.password
+      );
+      if (!validatePassword) {
+        throw {
+          msg: "Password does not match",
+          code: "UL003",
+        };
+      }
+      const token = this.jwt.sign(entity.email);
+      return token;
     } catch (error) {
       throw error;
     }
