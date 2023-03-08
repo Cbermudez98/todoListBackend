@@ -17,6 +17,8 @@ export class Index {
         this.app.use(express.json());
         this.app.use("/user", new User().userRoutes());
         this.app.use("/todo", new Todo().todoRoutes());
+
+        this.app.get("/healthCheck", (req, res) => res.sendStatus(200))
     }
 
     initServer() {
