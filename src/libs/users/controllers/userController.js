@@ -78,7 +78,7 @@ export class UserController {
         };
       }
       const token = this.jwt.sign(entity.email);
-      return token;
+      return { token, _id: found._id };
     } catch (error) {
       throw error;
     }
@@ -86,5 +86,22 @@ export class UserController {
 
   async existEmail(email) {
     return await userCreateModel.findOne({ email });
+  }
+
+  async renewJwt(email) {
+    try {
+      const found = await this.existEmail(email);
+      if (!found) {
+        throw {
+          msg: "Not user was found",
+          code: "UL002",
+        };
+      }
+
+      const token = this.jwt.sign(email);
+      return { token, _id: found._id };
+    } catch (error) {
+      throw error;
+    }
   }
 }

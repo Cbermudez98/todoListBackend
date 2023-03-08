@@ -24,6 +24,12 @@ export class Todo {
         this.app.delete("/:id/:idOwner", this.jwt.applyJwt(), (req, res) => {
             response(this.todoController.deleteTodo(req.params.id, req.params.idOwner), req, res);
         });
+        this.app.get("/all/:id", this.jwt.applyJwt(), (req, res) => {
+            response(this.todoController.getAll(req.params.id), req, res);
+        });
+        this.app.get("/:idOwner/:_id", this.jwt.applyJwt(), (req, res) => {
+            response(this.todoController.getSingle(req.params.idOwner, req.params._id), req, res);
+        });
         return this.app;
     }
 }

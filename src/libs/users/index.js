@@ -32,6 +32,10 @@ export class User {
     this.app.post("/login", this.entityValidate.apply(LoginInterface),(req, res) => {
         response(this.userController.login(req.body), req, res);
     });
+
+    this.app.get("/validToken/:email", this.jwt.applyJwt(), (req, res) => {
+      response(this.userController.renewJwt(req.params.email), req, res);
+    })
     return this.app;
   }
 }

@@ -62,4 +62,26 @@ export class TodoController {
         }
     }
   }
+
+  async getAll(_id) {
+    try {
+        return await TodoModel.find({idOwner: _id});
+    } catch (error) {
+        throw {
+            msg: "Error getting data",
+            code: "TD006"
+        }
+    }
+  }
+
+  async getSingle(idOwner, _id) {
+    try {
+        return await TodoModel.findOne({idOwner, _id});
+    } catch (error) {
+        throw {
+            msg: "Error getting data",
+            code: "TD007"
+        }
+    }
+  }
 }
